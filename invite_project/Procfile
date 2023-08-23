@@ -1,0 +1,1 @@
+web: gunicorn invite_project.wsgi

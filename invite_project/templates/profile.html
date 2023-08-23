@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Welcome, {{ request.user.username }}</h2>
+    <p>Your phone number: {{ request.user.phone_number }}</p>
+    <p>Your invite code: {{ request.user.invite_code }}</p>
+
+    {% if not request.user.used_invite_code %}
+    <h3>Activate an Invite Code</h3>
+    <form method="post">
+        {% csrf_token %}
+        <label for="invite_code">Enter Invite Code:</label>
+        <input type="text" name="invite_code" required>
+        <button type="submit">Activate</button>
+    </form>
+    {% else %}
+    <h3>You have already activated an invite code: {{ request.user.used_invite_code.code }}</h3>
+    {% endif %}
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    {% if success %}
+        <p class="success">{{ success }}</p>
+    {% endif %}
+
+    <h3>Users who activated using your invite code:</h3>
+    <ul>
+        {% for user in activated_users %}
+        <li>{{ user.phone_number }}</li>
+        {% empty %}
+        <li>No users have activated using your invite code yet.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
